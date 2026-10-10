@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Premium Maintenance Suite</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #0ea5e9;
+            --accent-hover: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #334155;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            padding-bottom: 80px;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 1.5rem;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        header p {
+            font-size: 0.85rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .tab-container {
+            display: flex;
+            overflow-x: auto;
+            gap: 8px;
+            margin-bottom: 20px;
+            padding-bottom: 5px;
+        }
+
+        .tab-btn {
+            background: var(--card-bg);
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border-color: var(--accent-color);
+            font-weight: 600;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .alert-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-good { background: rgba(16, 185, 129, 0.2); color: var(--success); }
+        .badge-warn { background: rgba(245, 158, 11, 0.2); color: var(--warning); }
+        .badge-danger { background: rgba(239, 68, 68, 0.2); color: var(--danger); }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .info-item label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .info-item span {
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 12px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: 1px solid var(--accent-color);
+        }
+
+        btn, button.action-btn {
+            width: 100%;
+            background: var(--accent-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            margin-top: 8px;
+            transition: background 0.2s;
+        }
+
+        btn:hover, button.action-btn:hover {
+            background: var(--accent-hover);
+        }
+
+        .log-item {
+            border-left: 3px solid var(--accent-color);
+            padding-left: 10px;
+            margin-bottom: 12px;
+        }
+
+        .log-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .log-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .log-text {
+            font-size: 0.9rem;
+            margin-top: 3px;
+        }
+
+        .schedule-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 0.85rem;
+        }
+
+        .schedule-row:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .toggle-group:last-child {
+            border-bottom: none;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+        }
+
+        .switch input { opacity: 0; width: 0; height: 0; }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: var(--border-color);
+            transition: .3s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px; width: 16px;
+            left: 3px; bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider { background-color: var(--success); }
+        input:checked + .slider:before { transform: translateX(18px); }
+
+        .chart-mock {
+            height: 120px;
+            display: flex;
+            align-items: flex-end;
+            gap: 15px;
+            padding: 10px 20px 0 20px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .chart-bar-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .chart-bar {
+            width: 100%;
+            background: var(--accent-color);
+            border-top-left-radius: 4px;
+            border-top-right-radius: 4px;
+            min-height: 5px;
+            transition: height 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>TATA SAFARI</h1>
+        <p>PREMIUM MAINTENANCE SUITE</p>
+    </header>
+
+    <div class="tab-container">
+        <button class="tab-btn active" onclick="switchTab('overview')">Overview</button>
+        <button class="tab-btn" onclick="switchTab('logs')">Service Logs</button>
+        <button class="tab-btn" onclick="switchTab('calc')">Fuel Calc</button>
+        <button class="tab-btn" onclick="switchTab('schedule')">Official Plan</button>
+        <button class="tab-btn" onclick="switchTab('analytics')">Expenses</button>
+        <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
+    </div>
+
+    <!-- OVERVIEW TAB -->
+    <div id="overview" class="tab-content active">
+        <div class="card">
+            <div class="card-title">Odometer Status</div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Current Mileage</label>
+                    <span id="display-odo">6,800 km</span>
+                </div>
+                <div class="info-item">
+                    <label>Update Status</label>
+                    <span style="color: var(--success)">Healthy</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Annual Service <div class="alert-badge badge-good" id="service-status">11 Mos Left</div></div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Last Done</label>
+                    <span>6,800 km (Today)</span>
+                </div>
+                <div class="info-item">
+                    <label>Next Due</label>
+                    <span>21,800 km / 1 Year</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">Compliance Metrics</div>
+            <div class="info-grid" style="grid-template-columns: 1fr;">
+                <div class="schedule-row">
+                    <span>Insurance Expiry</span>
+                    <span class="alert-badge badge-warn">Expires in 45 Days</span>
+                </div>
+                <div class="schedule-row">
+                    <span>PUC (Pollution) Check</span>
+                    <span class="alert-badge badge-good">Valid (320 Days)</span>
+                </div>
+                <div class="schedule-row">
